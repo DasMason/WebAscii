@@ -31,28 +31,18 @@ def pixel_to_ascii(pixelval, styleset, invert=True):
     return styleset[index]
 
 def asciify(img, styleset, blockwidth, blockheight, color_mode=None):
-    """
-    color_mode:
-        None = regular grayscale ASCII
-        "color" = use pixel RGB color
-        "matrix" = green on black
-    """
-    width, height = img.size
+    width, height = img.size 
     pxls = img.load()
-    
-    #if using color modes, convert to RGB
-    if color_mode in ("color", "matrix"):
-        img = img.convert("RGB")
-        pxls = img.load()
 
     asciiart = []
 
     for y in range(0, height, blockheight):
         line = ""
+
         for x in range(0, width, blockwidth):
+            r_sum = g_sum = b_sum = 0
             blocksum = 0
             count = 0
-            r_sum, g_sum, b_sum = 0, 0, 0
 
             for dy in range(blockheight):
                 for dx in range(blockwidth):
@@ -60,38 +50,38 @@ def asciify(img, styleset, blockwidth, blockheight, color_mode=None):
                     py = y + dy
 
                     if px < width and py < height:
-                        if color_mode in ("color", "matrix"):
-                            r, g, b = pxls[px, py]
+                        if color_mode == "color" or color_mode == "matrix":
+                            r, g, b = pxls[px, py][:3]
                             r_sum += r
                             g_sum += g
                             b_sum += b
-                            #use average brightness for mapping
-                            brightness = int((r + g + b)/3)
-                            blocksum += brightness
-                        else:
+                        else:  #grayscale
                             blocksum += pxls[px, py]
                         count += 1
 
-            blockavg = blocksum // count
-            char = pixel_to_ascii(blockavg, styleset)
+            if count == 0:
+                continue
 
             if color_mode == "color":
-                #get average rgb value for the block
+                #average color values
                 r_avg = r_sum // count
                 g_avg = g_sum // count
                 b_avg = b_sum // count
-                line += f'<span style="color: rgb({r_avg},{g_avg},{b_avg})">{char}</span>'
+                #when using color mode, use a solid block
+                line += f'<span style="color: rgb({r_avg},{g_avg},{b_avg})">█</span>'
+
             elif color_mode == "matrix":
-    
-                g_val = int(blockavg)
-                line += f'<span style="color: rgb(0,{g_val},0)">{char}</span>'
+                #green average for matrix
+                g_avg = g_sum // count
+                #map green to characters
+                index = g_avg * (len(styleset) - 1) // 255
+                line += f'<span style="color: rgb(0,{g_avg},0)">{styleset[index]}</span>'
+
             else:
-                line += char
+                #regular grayscale ascii
+                blockavg = blocksum // count
+                line += pixel_to_ascii(blockavg, styleset)
 
         asciiart.append(line)
 
-    #if using color modes, join with <br>, otherwise create a new line
-    if color_mode in ("color", "matrix"):
-        return "<br>".join(asciiart)
-    else:
-        return "\n".join(asciiart)
+    return "\n".join(asciiart)
