@@ -23,18 +23,21 @@ def index():
         #user chooses a style
         selected_style = request.form.get("style", "classic")
 
+        #user selects color mode
+        selected_color_mode = request.form.get("color_mode")  # None, "color", "matrix"
         #create block shading parameters based on user selected options
         target_width = int(request.form.get("width", 120))  
         blockwidth = max(1, img.width // target_width)
         blockheight = max(1, int(blockwidth * 0.55))
 
         #create the ascii art
-        asciiart = asciify(
-            img,
-            styles[selected_style],
-            blockwidth=blockwidth,
-            blockheight=blockheight
-        )
+    asciiart = asciify(
+        img,
+        styles[selected_style],
+        blockwidth=blockwidth,
+        blockheight=blockheight,
+        color_mode=selected_color_mode
+    )
 
 
 

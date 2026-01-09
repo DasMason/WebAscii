@@ -70,13 +70,12 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
-
     </style>
 </head>
 <body>
 
     <h1>ASCII Art Generator</h1>
-    <p class="instructions">Upload an image, pick a style and width, and see it in ASCII!</p>
+    <p class="instructions">Upload an image, pick a style, width, and optional color mode!</p>
 
     <form method="POST" enctype="multipart/form-data">
         <input type="file" name="image" accept="image/*" required>
@@ -93,11 +92,21 @@
             {% endfor %}
         </select>
 
+        <!-- Color/Matrix option -->
+        <label for="color_mode">Color Mode:</label>
+        <select name="color_mode">
+            <option value="">None</option>
+            <option value="color">Color</option>
+            <option value="matrix">Matrix (green)</option>
+        </select>
+
         <button type="submit">Convert</button>
     </form>
 
     {% if asciiart %}
-    <pre>{{ asciiart }}</pre>
+    <pre style="background-color:#000;">
+        {{ asciiart|safe }}
+    </pre>
 
     <form method="POST" action="/download">
         <input type="hidden" name="ascii_data" value="{{ asciiart|e }}">
