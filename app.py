@@ -31,13 +31,13 @@ def index():
         blockheight = max(1, int(blockwidth * 0.55))
 
         #create the ascii art
-    asciiart = asciify(
-        img,
-        styles[selected_style],
-        blockwidth=blockwidth,
-        blockheight=blockheight,
-        color_mode=selected_color_mode
-    )
+        asciiart = asciify(
+            img,
+            styles[selected_style],
+            blockwidth=blockwidth,
+            blockheight=blockheight,
+            color_mode=selected_color_mode
+        )
 
 
 
