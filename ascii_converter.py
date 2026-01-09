@@ -13,14 +13,19 @@ styles = {
 }
 
 #prepare image by resizing and converting to grayscale if needed
-def prepimage(img, desired_width):
-    # grayscale
-    img = img.convert("L")
-    # resize
+def prepimage(img, desired_width, color_mode=None):
+    #convert image based on mode
+    if color_mode == "color" or color_mode == "matrix":
+        img = img.convert("RGB")
+    else:
+        img = img.convert("L")
+
+    #resize
     original_width, original_height = img.size
     aspect_ratio = original_height / original_width
     desired_height = int(aspect_ratio * desired_width * 0.55)
     img = img.resize((desired_width, desired_height))
+
     return img
 
 #brightness mapping to ascii characters

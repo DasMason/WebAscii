@@ -18,13 +18,13 @@ def index():
 
         #user chooses a desired width for the ascii art
         desired_width = int(request.form.get("width", 300))
-        img = prepimage(img, desired_width)
 
         #user chooses a style
         selected_style = request.form.get("style", "classic")
 
         #user selects color mode
         selected_color_mode = request.form.get("color_mode")  # None, "color", "matrix"
+        img = prepimage(img, desired_width, color_mode=selected_color_mode)
         #create block shading parameters based on user selected options
         target_width = int(request.form.get("width", 120))  
         blockwidth = max(1, img.width // target_width)
