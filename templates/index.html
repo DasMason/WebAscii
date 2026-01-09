@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Art Generator</title>
+    <style>
+        /* General page styling */
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            color: #111;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: monospace;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        p.instructions {
+            font-size: 1em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Form styling */
+        form {
+            margin-bottom: 30px;
+        }
+
+        label {
+            margin: 0 5px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            padding: 6px 10px;
+            font-size: 14px;
+            margin-right: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* ASCII display styling */
+        pre {
+            font-family: monospace;
+            line-height: 0.6em;
+            font-size: 10px;
+            white-space: pre;
+            overflow-x: auto;
+            max-width: 90%;
+            margin: 20px auto;
+            background-color: #222;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>ASCII Art Generator</h1>
+    <p class="instructions">Upload an image, pick a style and width, and see it in ASCII!</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+
+        <!-- Width input -->
+        <label for="width">Width:</label>
+        <input type="number" name="width" min="50" max="500" value="300">
+
+        <!-- Style selector -->
+        <label for="style">Style:</label>
+        <select name="style">
+            {% for key in styles.keys() %}
+            <option value="{{ key }}">{{ key }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Convert</button>
+    </form>
+
+    {% if asciiart %}
+    <pre>{{ asciiart }}</pre>
+
+    <form method="POST" action="/download">
+        <input type="hidden" name="ascii_data" value="{{ asciiart|e }}">
+        <button type="submit">Download as .txt</button>
+    </form>
+    {% endif %}
+
+</body>
+</html>
